@@ -252,3 +252,4 @@
 /Users/meghaagr/Documents/Learnings/Space.Service/Movies.Client/bin/Debug/net6.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 /Users/meghaagr/Documents/Learnings/Space.Service/Movies.Client/bin/Debug/net6.0/Microsoft.IdentityModel.Tokens.dll
 /Users/meghaagr/Documents/Learnings/Space.Service/Movies.Client/bin/Debug/net6.0/System.IdentityModel.Tokens.Jwt.dll
+/Users/meghaagr/Documents/Learnings/Space.Service/Movies.Client/bin/Debug/net6.0/IdentityModel.dll

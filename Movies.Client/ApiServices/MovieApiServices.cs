@@ -1,4 +1,6 @@
+using IdentityModel.Client;
 using Movies.Client.Models;
+using Newtonsoft.Json;
 
 namespace Movies.Client.ApiServices;
 
@@ -6,22 +8,29 @@ public class MovieApiServices: IMovieApiServices
 {
     public async Task<IEnumerable<Movie>> GetMovies()
     {
-        var movies = new List<Movie>()
+        // need to installl Identity model to get token
+        //get token from dentity server
+        // send request with protected API by using token in header
+        var clientCredentialsTokenRequest = new ClientCredentialsTokenRequest
         {
-            new Movie()
-            {
-
-                Id = 1,
-                Genre = "Drama",
-                Title = "The Shawshank Redemption",
-                Rating = "9.3",
-                ImageUrl = "images/src",
-                ReleaseDate = new DateTime(1994, 5, 5),
-                Owner = "alice"
-
-            }
+            Address = "https://localhost:5005/connect/token",
+            ClientId = "movieClient",
+            ClientSecret = "secret",
+            Scope = "movieApi"
         };
-        return await Task.FromResult(movies);
+        var httpClient = new HttpClient();
+        var discoveryDocumentAsync = await httpClient.GetDiscoveryDocumentAsync("https://localhost:5005");
+        if (discoveryDocumentAsync.IsError) return null;
+        var token = await httpClient.RequestClientCredentialsTokenAsync(clientCredentialsTokenRequest);
+        if (token.IsError) return null;
+        var client = new HttpClient();
+        client.SetBearerToken(token.AccessToken);
+        var response = await client.GetAsync("https://localhost:5008/api/Movie");
+        // response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadAsStringAsync();
+        var movies = JsonConvert.DeserializeObject<List<Movie>>(content);
+        return movies;
+
     }
 
     public Task<Movie> GetMovie(int id)
